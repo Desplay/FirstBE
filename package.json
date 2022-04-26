@@ -1,0 +1,14 @@
+{
+  "name": "first-be",
+  "version": "1.0.0",
+  "description": "first time in BE",
+  "main": "src/main-module.js",
+  "scripts": {
+    "test": "NULL"
+  },
+  "author": "desplayshido",
+  "license": "ISC",
+  "dependencies": {
+    "minimist": "^1.2.6"
+  }
+}
