@@ -102,7 +102,6 @@ const CopyFileWithOptional = function (InputFile, InputOptional1, InputOptional2
     }
     //----------------------- Check folder output is existed ?, if not create that folder ---------------------- //
     let input = InputFolder;
-    console.log(FolderPath);
     let ExistFolder = function(input) {
         return input.lastIndexOf('/') == -1;
     }
