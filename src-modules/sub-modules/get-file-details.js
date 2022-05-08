@@ -23,6 +23,9 @@ const GetFileDetailsInFolder = function(input) {
             case 'README.md' :
                     File = 'source';
                     break;
+            case 'READ ME FIRST PLEASE.txt':
+                File = 'source';
+                break;
             default :
                 File.Name = input.slice(input.lastIndexOf('/')+1, input.lastIndexOf('.'))
                 File.FirstName = input.slice(input.lastIndexOf('/')+1, input.lastIndexOf('/')+2)
