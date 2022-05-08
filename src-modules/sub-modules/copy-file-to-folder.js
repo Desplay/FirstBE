@@ -69,14 +69,20 @@ const handingTime = function(InputFile) {
 }
 
 const CopyFileWithOptional = function (InputFile, InputOptional1, InputOptional2, InputOptional3, InputFolder) {
-    var FolderPath = new Array();
-    var Optional = [InputOptional1, InputOptional2, InputOptional3];
+    // ------------ creating arrays in directory order to handling ------------ //
+    let FolderPath = new Array();
+    let Optional = [InputOptional1, InputOptional2, InputOptional3];
     for( i = 0; i < Optional.length; i++) {
+        if(Optional[i] === undefined) {
+            FolderPath[i] = '';
+            continue;
+        }
+           
+        if(Optional[i].indexOf('--type') != -1) {
+            FolderPath[i] = handingType(InputFile);
+            continue;
+        }
         switch(Optional[i]) {
-            case '--type': {
-                FolderPath[i] = handingType(InputFile);
-                break;
-            }
             case '--name': {
                 FolderPath[i] = handingName(InputFile);
                 break;
@@ -94,8 +100,32 @@ const CopyFileWithOptional = function (InputFile, InputOptional1, InputOptional2
                 break;
         }
     }
+    //----------------------- Check folder output is existed ?, if not create that folder ---------------------- //
     let input = InputFolder;
-    let x = '';
+    console.log(FolderPath);
+    let ExistFolder = function(input) {
+        return input.lastIndexOf('/') == -1;
+    }
+    let Folder = ''
+    if (input.indexOf('./') === -1) {
+        Folder = input.slice(0,3);
+    }
+    else {
+        while(!ExistFolder(input)) {
+            input = input.slice(input.indexOf('/')+1,input.length);
+            if(input.indexOf('/') != -1)
+                Folder = path.join(Folder, input.slice(0, input.indexOf('/')));
+            else
+            Folder = path.join(Folder, input.slice(0, input.length));
+            if(!fs.existsSync(Folder)) {
+                fs.mkdirSync(Folder, true);
+            }
+        }
+    }
+
+    // ---------------- create output folder ------------------ //
+    let x = Folder;
+    input = Folder;
     for(i = 0; i < FolderPath.length; i++) {
         x = path.join(input, FolderPath[i]);
         if(!fs.existsSync(x)) {
@@ -103,19 +133,24 @@ const CopyFileWithOptional = function (InputFile, InputOptional1, InputOptional2
         }
         input = x;
     }
-    x += '\\' + InputFile.Name + InputFile.ExtName;
-    let BackUpFolder = path.join(InputFolder, 'BackUpFolder\\');
+
+    // --------------- create backup folder ------------- //
+    let BackUpFolder = path.join(Folder, 'BackUpFolder\\');
     if(!fs.existsSync(BackUpFolder)) {
         fs.mkdirSync(BackUpFolder, true);
     }
+
+    // -------------- handing file ------------------ //
     BackUpFolder += InputFile.Name + InputFile.ExtName
-    if(!fs.existsSync(x)) {
-        fs.copyFileSync(InputFile.Path, x)
+    let FullName = InputFile.Name + InputFile.ExtName
+    FullName = path.join(x, FullName)
+
+    if(!fs.existsSync(FullName)) {
+        fs.copyFileSync(InputFile.Path, FullName)
     }
     if(!fs.existsSync(BackUpFolder)) {
         fs.renameSync(InputFile.Path, BackUpFolder)
     }
     return;
 }
-
 module.exports = CopyFileWithOptional;
