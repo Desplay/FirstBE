@@ -3,11 +3,8 @@ const fs = require('fs')
 const path = require('path')
 
 const HandingFolder = function(input) {
-    if (input.lastIndexOf('.') === -1) {
-      console.log('Input is not file or folder, please try again !');
-      return;
-    }
-    if (input.lastIndexOf('.') > 0) {
+    let IsFile = input.lastIndexOf('.') > 0;
+    if (IsFile) { // Is file then
       if (!fs.existsSync(input)) {
         console.log("This file does not exist in that directory, please try again!")
         return;
@@ -16,6 +13,7 @@ const HandingFolder = function(input) {
         console.log("This file located in source folder, you cant handling this file, please try again!")
         return;
       }
+      // ---------- Get file ------------ //
       var File = new Array();
       File[0] = FileDetails(input);
       if (File[0] === 'source') {
@@ -24,7 +22,7 @@ const HandingFolder = function(input) {
       }
       return File;
     }
-    else {
+    else { // Is Folder then:
         if (input === './src-modules') {
             console.log('This is source folder, you cant handling this file, please try again !')
             return;
@@ -37,6 +35,7 @@ const HandingFolder = function(input) {
             console.log('This folder located in source folder, you cant handling this file, please try again !')
             return;
         }
+        // ---------------- Get only File --------------- //
         var FileArr = new Array();
         if(input.lastIndexOf('/') != input.length)
             input += '/';
